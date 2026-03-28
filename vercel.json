@@ -3,8 +3,12 @@
   "outputDirectory": "dist/public",
   "rewrites": [
     {
-      "source": "/portfolio/(.*)",
-      "destination": "/portfolio/index.html"
+      "source": "/portfolio",
+      "destination": "/"
+    },
+    {
+      "source": "/portfolio/:path*",
+      "destination": "/:path*"
     }
   ]
 }
