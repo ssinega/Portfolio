@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 
 function RouterComponent() {
   return (
-    <Router base="/portfolio">
+    <Router base="/">
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/404" component={NotFound} />
