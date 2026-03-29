@@ -1,6 +1,7 @@
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useIsMobile } from "../hooks/useMobile";
 
 // LAYER 1: Floating Orbs (always visible, slow drift)
 const FloatingOrbs = () => {
@@ -36,11 +37,14 @@ const FloatingOrbs = () => {
 
 const Orb = ({ position, radius, color, speed, offset }: any) => {
   const ref = useRef<THREE.Mesh>(null);
+  const isMobile = useIsMobile();
+  
   useFrame((state) => {
     if (ref.current) {
-      // Parallax effect based on mouse position
-      const targetX = position[0] + state.mouse.x * 2;
-      const targetY = position[1] + Math.sin(state.clock.getElapsedTime() * speed + offset) * 0.3 + state.mouse.y * 2;
+      // Reduce parallax effect on mobile devices
+      const parallaxMultiplier = isMobile ? 0.5 : 2;
+      const targetX = position[0] + state.mouse.x * parallaxMultiplier;
+      const targetY = position[1] + Math.sin(state.clock.getElapsedTime() * speed + offset) * 0.3 + state.mouse.y * parallaxMultiplier;
       
       ref.current.position.x = THREE.MathUtils.lerp(ref.current.position.x, targetX, 0.05);
       ref.current.position.y = THREE.MathUtils.lerp(ref.current.position.y, targetY, 0.05);
@@ -67,6 +71,7 @@ const Orb = ({ position, radius, color, speed, offset }: any) => {
 // LAYER 2: Particle Field (star-like dots)
 const ParticleField = () => {
   const ref = useRef<THREE.Points>(null);
+  const isMobile = useIsMobile();
   const count = 400;
   
   const positions = useMemo(() => {
@@ -82,9 +87,10 @@ const ParticleField = () => {
   useFrame((state) => {
     if (ref.current) {
       ref.current.rotation.y += 0.0003;
-      // Slight parallax shift
-      ref.current.position.x = THREE.MathUtils.lerp(ref.current.position.x, state.mouse.x * 0.5, 0.02);
-      ref.current.position.y = THREE.MathUtils.lerp(ref.current.position.y, state.mouse.y * 0.5, 0.02);
+      // Reduce parallax shift on mobile
+      const parallaxMultiplier = isMobile ? 0.1 : 0.5;
+      ref.current.position.x = THREE.MathUtils.lerp(ref.current.position.x, state.mouse.x * parallaxMultiplier, 0.02);
+      ref.current.position.y = THREE.MathUtils.lerp(ref.current.position.y, state.mouse.y * parallaxMultiplier, 0.02);
     }
   });
 

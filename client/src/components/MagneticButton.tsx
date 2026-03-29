@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useIsMobile } from "../hooks/useMobile";
 
 interface MagneticButtonProps {
   children: React.ReactNode;
@@ -10,9 +11,10 @@ export default function MagneticButton({ children, className = "", distance = 12
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!buttonRef.current) return;
+    if (isMobile || !buttonRef.current) return;
 
     const { clientX, clientY } = e;
     const { left, top, width, height } = buttonRef.current.getBoundingClientRect();
@@ -31,9 +33,13 @@ export default function MagneticButton({ children, className = "", distance = 12
     });
   };
 
-  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseEnter = () => {
+    if (isMobile) return;
+    setIsHovered(true);
+  };
 
   const handleMouseLeave = () => {
+    if (isMobile) return;
     setIsHovered(false);
     setPosition({ x: 0, y: 0 });
   };
@@ -46,8 +52,8 @@ export default function MagneticButton({ children, className = "", distance = 12
       onMouseLeave={handleMouseLeave}
       className={`inline-block transition-transform duration-300 ${className}`}
       style={{
-        transform: isHovered ? `translate(${position.x}px, ${position.y}px)` : "translate(0px, 0px)",
-        transition: isHovered ? "none" : "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        transform: isHovered && !isMobile ? `translate(${position.x}px, ${position.y}px)` : "translate(0px, 0px)",
+        transition: isHovered && !isMobile ? "none" : "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
       }}
     >
       {/* Wrapper to ensure interaction propagation */}

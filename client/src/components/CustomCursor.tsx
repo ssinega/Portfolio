@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import { motion, useSpring, useMotionValue } from "framer-motion";
+import { useIsMobile } from "../hooks/useMobile";
 
 export default function CustomCursor() {
+  const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
+
+  // Don't render on mobile devices
+  if (isMobile) {
+    return null;
+  }
 
   // Outer ring spring effect for lag (0.1s feeling)
   const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };

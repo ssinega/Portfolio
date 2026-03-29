@@ -6,6 +6,7 @@ import {
   useScroll, 
   useSpring
 } from "framer-motion";
+import { useIsMobile } from "../hooks/useMobile";
 import ThreeDElement from "../components/ThreeDElement";
 import CursorGlow from "../components/CursorGlow";
 import CustomCursor from "../components/CustomCursor";
@@ -18,7 +19,7 @@ import Tilt from "react-parallax-tilt";
 import Lottie from "lottie-react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
-import { Download, Code, Github, Brain, Cloud, Mail, Phone, Linkedin, Trophy, Target, ChevronDown } from "lucide-react";
+import { Download, Code, Github, Brain, Cloud, Mail, Phone, Linkedin, Trophy, Target, ChevronDown, Menu, X } from "lucide-react";
 
 /**
  * Deep Black Theme with Neon Blue/Purple Gradients
@@ -188,6 +189,8 @@ const CertCard = ({ cert }: { cert: Certification }) => {
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Refs for sections
   const aboutRef = useRef<HTMLElement | null>(null);
@@ -345,11 +348,11 @@ export default function Home() {
 
         {/* Content */}
         <div className={`ml-8 md:ml-0 md:w-1/2 ${index % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12 md:ml-auto"}`}>
-          <div className="glass-card p-6 md:p-8 card-3d transition-all duration-300 group-hover:border-accent/50" style={{
+          <div className="glass-card p-4 sm:p-6 md:p-8 card-3d transition-all duration-300 group-hover:border-accent/50" style={{
             transform: isHovered ? "scale(1.02)" : "scale(1)",
             boxShadow: isHovered ? "0 0 40px rgba(124, 58, 237, 0.3)" : "0 0 20px rgba(124, 58, 237, 0.1)",
           }}>
-            <h3 className="text-xl font-bold text-accent mb-2 transition-all duration-300" style={{
+            <h3 className="text-lg sm:text-xl font-bold text-accent mb-2 transition-all duration-300" style={{
               color: isHovered ? "#38bdf8" : "#0ea5e9",
             }}>{item.title}</h3>
             <p className="text-muted-foreground font-medium mb-2 transition-colors duration-300" style={{
@@ -517,6 +520,8 @@ export default function Home() {
               <span className="text-[10px] text-green-400 font-bold uppercase tracking-wider">Available for opportunities</span>
             </div>
           </div>
+          
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
             <a href="#about" className="text-sm hover:text-accent transition-colors">About</a>
             <a href="#experience" className="text-sm hover:text-accent transition-colors">Experience</a>
@@ -527,6 +532,18 @@ export default function Home() {
             <a href="#activities" className="text-sm hover:text-accent transition-colors">Activities</a>
             <a href="#contact" className="text-sm hover:text-accent transition-colors">Contact</a>
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center gap-4">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-accent/10 transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
           <MagneticButton>
             <a 
               href="https://drive.google.com/uc?export=download&id=1Ri2ygg1s6v9xteySqlbq7TcxA8w9PPJp" 
@@ -544,6 +561,36 @@ export default function Home() {
             </a>
           </MagneticButton>
         </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <div 
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden bg-background/95 backdrop-blur-lg border-t border-border z-50"
+              >
+                <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
+                  <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">About</a>
+                  <a href="#experience" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">Experience</a>
+                  <a href="#hackathons" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">Hackathons</a>
+                  <a href="#projects" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">Projects</a>
+                  <a href="#skills" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">Skills</a>
+                  <a href="#certifications" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">Certifications</a>
+                  <a href="#activities" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">Activities</a>
+                  <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="text-sm hover:text-accent transition-colors py-2">Contact</a>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
@@ -599,7 +646,7 @@ export default function Home() {
                 hidden: { opacity: 0, y: 30 },
                 visible: { opacity: 1, y: 0 }
               }}
-              className="text-5xl md:text-7xl font-bold mb-6 leading-tight transition-colors duration-300"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight transition-colors duration-300"
             >
               Syntaxing <span className="neon-gradient-text glow-text">Success</span>, Engineering Minds, Crafting Possibilities
             </motion.h1>
@@ -609,7 +656,7 @@ export default function Home() {
                 hidden: { opacity: 0, y: 10 },
                 visible: { opacity: 1, y: 0 }
               }}
-              className="text-2xl md:text-3xl font-extrabold tracking-[0.4em] bg-gradient-to-r from-white via-white/90 to-accent bg-clip-text text-transparent uppercase mb-6 font-display drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+              className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-[0.4em] bg-gradient-to-r from-white via-white/90 to-accent bg-clip-text text-transparent uppercase mb-6 font-display drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
             >
               Sinega Selvakumar
             </motion.p>
@@ -619,7 +666,7 @@ export default function Home() {
                 hidden: { opacity: 0, y: 30 },
                 visible: { opacity: 1, y: 0 }
               }}
-              className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed transition-colors duration-300 min-h-[1.5em] flex items-center pointer-events-auto"
+              className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed transition-colors duration-300 min-h-[1.5em] flex items-center pointer-events-auto"
             >
               {renderHighlightedText(typedText)}
               <span className="w-0.5 h-6 bg-accent ml-1 animate-pulse" />
@@ -632,7 +679,7 @@ export default function Home() {
               }}
               initial="hidden"
               animate="visible"
-              className="flex flex-wrap gap-4 mb-10 pointer-events-auto"
+              className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-10 pointer-events-auto"
             >
               {[
                 { label: "SGPA", value: "8.8/10", icon: Trophy },
@@ -640,11 +687,11 @@ export default function Home() {
                 { label: "AI Projects", value: "3 Innovative", icon: Brain },
                 { label: "Expertise", value: "Salesforce Certified", icon: Cloud },
               ].map((high, i) => (
-                <div key={i} className="flex items-center gap-3 bg-accent/5 px-4 py-3 rounded-2xl border border-accent/20">
-                  <high.icon className="w-5 h-5 text-accent" />
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider font-bold text-accent/60 leading-none mb-1">{high.label}</p>
-                    <p className="text-sm font-bold text-foreground leading-none">{high.value}</p>
+                <div key={i} className="flex items-center gap-2 sm:gap-3 bg-accent/5 px-3 sm:px-4 py-2 sm:py-3 rounded-2xl border border-accent/20 min-w-[120px] sm:min-w-[140px]">
+                  <high.icon className="w-4 h-4 sm:w-5 sm:h-5 text-accent flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-accent/60 leading-none mb-1">{high.label}</p>
+                    <p className="text-xs sm:text-sm font-bold text-foreground leading-none truncate">{high.value}</p>
                   </div>
                 </div>
               ))}
@@ -654,13 +701,13 @@ export default function Home() {
                 hidden: { opacity: 0, y: 30 },
                 visible: { opacity: 1, y: 0 }
               }}
-              className="flex flex-col sm:flex-row gap-4 pointer-events-auto"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 pointer-events-auto"
             >
               <MagneticButton>
                 <a href="#projects">
                   <Button
                     size="lg"
-                    className="bg-accent text-accent-foreground hover:bg-sky-500 glow-accent transition-all duration-300"
+                    className="bg-accent text-accent-foreground hover:bg-sky-500 glow-accent transition-all duration-300 w-full sm:w-auto"
                   >
                     Explore My Work
                   </Button>
@@ -671,7 +718,7 @@ export default function Home() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-accent text-accent hover:bg-accent/10 transition-all"
+                    className="border-accent text-accent hover:bg-accent/10 transition-all w-full sm:w-auto"
                   >
                     Get In Touch
                   </Button>
@@ -689,7 +736,7 @@ export default function Home() {
           >
             {/* Orbiting Dots Container */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="absolute w-[360px] h-[360px] md:w-[480px] md:h-[480px]">
+              <div className="absolute w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] md:w-[480px] md:h-[480px]">
                 {/* Dot 1 */}
                 <div 
                   className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full bg-[#38bdf8] shadow-[0_0_10px_#38bdf8]"
@@ -712,7 +759,7 @@ export default function Home() {
             <motion.div
               animate={{ y: [0, -12, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="relative w-[220px] h-[250px] md:w-[320px] md:h-[360px]"
+              className="relative w-[180px] h-[200px] sm:w-[220px] sm:h-[250px] md:w-[320px] md:h-[360px]"
             >
               {/* Rotating Gradient Border */}
               <div 
@@ -1018,18 +1065,18 @@ export default function Home() {
           </motion.div>
           <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold mb-16">Featured Work</motion.h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {projects.map((project, index) => (
               <Tilt 
                 key={index}
-                tiltMaxAngleX={5} 
-                tiltMaxAngleY={5} 
-                glareEnable={true} 
+                tiltMaxAngleX={isMobile ? 0 : 5} 
+                tiltMaxAngleY={isMobile ? 0 : 5} 
+                glareEnable={!isMobile}
                 glareMaxOpacity={0.1} 
-                scale={1.02}
-                transitionSpeed={2500}
+                scale={isMobile ? 1 : 1.02}
+                transitionSpeed={isMobile ? 0 : 2500}
                 className="h-full"
-                tiltReverse={true}
+                tiltReverse={!isMobile}
               >
                 <motion.div
                   variants={itemVariants}
