@@ -479,7 +479,7 @@ export default function Home() {
     {
       year: "2025",
       items: [
-        { title: "Dev Battle", description: "Winner - Sri Shakthi Institute of Engineering and Technology", isWinner: true },
+        { title: "Dev Battle", description: "Runner - Sri Shakthi Institute of Engineering and Technology", isWinner: true },
         { title: "Adobe India Hackathon", description: "Shortlisted in 1st round", isShortlisted: true },
         { title: "Flipkart Grid - 7.0", description: "Shortlisted in 1st round", isShortlisted: true },
       ],
