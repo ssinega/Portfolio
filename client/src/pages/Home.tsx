@@ -494,7 +494,7 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 bg-background text-foreground relative`}>
-      <BackgroundCanvas />
+      {!isMobile && <BackgroundCanvas />}
 
       <CustomCursor />
       {/* Navigation Bar */}
@@ -597,7 +597,7 @@ export default function Home() {
       <section
         className="relative z-10 min-h-screen flex items-center justify-center overflow-hidden pt-20"
       >
-        <ThreeDElement />
+        {!isMobile && <ThreeDElement />}
         
         {/* Aurora Atmosphere Effect */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
